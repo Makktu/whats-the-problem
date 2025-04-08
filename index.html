@@ -14,6 +14,7 @@
         <header>
             <h1>What's The Problem?</h1>
             <p class="subtitle">Select a category to begin</p>
+            <button id="dev-menu-toggle" class="dev-menu-toggle">Dev Menu</button>
         </header>
         
         <main>
@@ -46,8 +47,49 @@
         </main>
         
         <footer>
-            <p>© 2025 What's The Problem? - A guided AI troubleshooting interface</p>
+            <p> 2025 What's The Problem? - A guided AI troubleshooting interface</p>
         </footer>
+    </div>
+
+    <!-- Developer Menu Panel -->
+    <div id="dev-menu" class="dev-menu">
+        <div class="dev-menu-header">
+            <h2>Developer Menu</h2>
+            <button id="dev-menu-close" class="dev-menu-close">×</button>
+        </div>
+        <div class="dev-menu-content">
+            <div class="dev-section">
+                <h3>LLM Chat Test</h3>
+                <div id="chat-container">
+                    <div id="chat-messages"></div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type a message to the LLM...">
+                        <button id="chat-send">Send</button>
+                    </div>
+                </div>
+            </div>
+            <div class="dev-section">
+                <h3>LLM Settings</h3>
+                <div class="settings-group">
+                    <label for="llm-endpoint">Endpoint URL:</label>
+                    <input type="text" id="llm-endpoint" value="http://localhost:1234/v1/chat/completions">
+                </div>
+                <div class="settings-group">
+                    <label for="llm-temperature">Temperature:</label>
+                    <input type="range" id="llm-temperature" min="0" max="1" step="0.1" value="0.7">
+                    <span id="temperature-value">0.7</span>
+                </div>
+                <div class="settings-group">
+                    <label for="llm-model">Model Name:</label>
+                    <input type="text" id="llm-model" value="local-model">
+                </div>
+            </div>
+            <div class="dev-section">
+                <h3>Connection Status</h3>
+                <div id="connection-status">Not connected</div>
+                <button id="test-connection">Test Connection</button>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>

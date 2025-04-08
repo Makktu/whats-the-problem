@@ -11,6 +11,9 @@
     --option-number-text: #ffffff;
     --border-radius: 12px;
     --transition-speed: 0.3s;
+    --dev-menu-bg: #1a1a1a;
+    --dev-menu-border: #333333;
+    --dev-menu-header: #252525;
 }
 
 * {
@@ -42,6 +45,7 @@ header {
     text-align: center;
     margin-bottom: 3rem;
     padding-top: 2rem;
+    position: relative;
 }
 
 h1 {
@@ -113,6 +117,221 @@ footer {
     font-size: 0.9rem;
 }
 
+/* Developer Menu Styles */
+.dev-menu-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.dev-menu-toggle:hover {
+    background-color: var(--accent-hover);
+}
+
+.dev-menu {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 400px;
+    height: 100vh;
+    background-color: var(--dev-menu-bg);
+    border-left: 1px solid var(--dev-menu-border);
+    z-index: 1000;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.dev-menu.open {
+    right: 0;
+}
+
+.dev-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--dev-menu-header);
+    border-bottom: 1px solid var(--dev-menu-border);
+}
+
+.dev-menu-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.dev-menu-close {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.dev-menu-content {
+    padding: 1rem;
+}
+
+.dev-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--dev-menu-border);
+}
+
+.dev-section h3 {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: var(--text-secondary);
+}
+
+/* Chat Interface */
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+    border: 1px solid var(--dev-menu-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+}
+
+.chat-message {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    max-width: 80%;
+}
+
+.user-message {
+    background-color: var(--accent-color);
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.llm-message {
+    background-color: var(--option-bg);
+    color: var(--text-primary);
+    align-self: flex-start;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 0.5rem;
+    background-color: var(--dev-menu-header);
+}
+
+#chat-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+#chat-send {
+    margin-left: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#chat-send:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Settings */
+.settings-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-group label {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.settings-group input {
+    padding: 0.5rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--dev-menu-border);
+    border-radius: 4px;
+    color: var(--text-primary);
+}
+
+.settings-group input[type="range"] {
+    padding: 0;
+}
+
+#connection-status {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: var(--bg-secondary);
+    font-size: 0.9rem;
+}
+
+#test-connection {
+    padding: 0.5rem 1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Response Styling */
+.response {
+    margin-top: 2rem;
+    padding: 2rem;
+    background-color: var(--option-bg);
+    border-radius: var(--border-radius);
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.response-content h2 {
+    margin-bottom: 1rem;
+    color: var(--accent-color);
+}
+
+.back-button {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color var(--transition-speed);
+}
+
+.back-button:hover {
+    background-color: var(--accent-hover);
+}
+
 /* Responsive adjustments */
 @media (min-width: 768px) {
     .options-container {
@@ -160,5 +379,10 @@ footer {
     
     .option-text {
         font-size: 1rem;
+    }
+    
+    .dev-menu {
+        width: 100%;
+        right: -100%;
     }
 }

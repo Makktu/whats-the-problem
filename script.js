@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Main application options
     const options = document.querySelectorAll('.option');
     
     options.forEach(option => {
@@ -53,4 +54,151 @@ document.addEventListener('DOMContentLoaded', () => {
             options.forEach(opt => opt.classList.remove('selected'));
         });
     }
+
+    // Developer Menu Functionality
+    const devMenuToggle = document.getElementById('dev-menu-toggle');
+    const devMenu = document.getElementById('dev-menu');
+    const devMenuClose = document.getElementById('dev-menu-close');
+    const chatInput = document.getElementById('chat-input');
+    const chatSend = document.getElementById('chat-send');
+    const chatMessages = document.getElementById('chat-messages');
+    const testConnection = document.getElementById('test-connection');
+    const connectionStatus = document.getElementById('connection-status');
+    const temperatureSlider = document.getElementById('llm-temperature');
+    const temperatureValue = document.getElementById('temperature-value');
+
+    // Toggle developer menu
+    devMenuToggle.addEventListener('click', () => {
+        devMenu.classList.toggle('open');
+    });
+
+    // Close developer menu
+    devMenuClose.addEventListener('click', () => {
+        devMenu.classList.remove('open');
+    });
+
+    // Update temperature display
+    temperatureSlider.addEventListener('input', () => {
+        temperatureValue.textContent = temperatureSlider.value;
+    });
+
+    // Test connection to LLM
+    testConnection.addEventListener('click', async () => {
+        const endpoint = document.getElementById('llm-endpoint').value;
+        connectionStatus.textContent = 'Testing connection...';
+        
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    model: document.getElementById('llm-model').value,
+                    messages: [{ role: 'user', content: 'Hello' }],
+                    temperature: parseFloat(temperatureSlider.value)
+                })
+            });
+            
+            if (response.ok) {
+                connectionStatus.textContent = 'Connected successfully!';
+                connectionStatus.style.color = '#4caf50';
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                const errorMessage = errorData.error?.message || `${response.status} ${response.statusText}`;
+                connectionStatus.textContent = `Error: ${errorMessage}`;
+                connectionStatus.style.color = '#f44336';
+                console.error('Connection error:', errorData);
+            }
+        } catch (err) {
+            connectionStatus.textContent = `Error: ${err.message}`;
+            connectionStatus.style.color = '#f44336';
+            console.error('Connection error:', err);
+        }
+    });
+
+    // Send message to LLM
+    async function sendMessage() {
+        const userInput = chatInput.value.trim();
+        if (!userInput) return;
+        
+        // Add user message to chat
+        addMessageToChat('user', userInput);
+        chatInput.value = '';
+        
+        // Get LLM settings
+        const endpoint = document.getElementById('llm-endpoint').value;
+        const model = document.getElementById('llm-model').value;
+        const temperature = parseFloat(temperatureSlider.value);
+        
+        // Create placeholder for LLM response
+        const placeholderId = 'response-' + Date.now();
+        addMessageToChat('llm', 'Thinking...', placeholderId);
+        
+        // Send request to LLM
+        try {
+            // Create a proper chat history array
+            const payload = {
+                model: model,
+                messages: [
+                    { role: 'system', content: 'You are a helpful assistant.' },
+                    { role: 'user', content: userInput }
+                ],
+                temperature: temperature
+            };
+            
+            console.log('Sending payload:', JSON.stringify(payload, null, 2));
+            
+            const res = await fetch(endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!res.ok) {
+                const errorData = await res.json().catch(() => ({}));
+                throw new Error(errorData.error?.message || `HTTP error: ${res.status}`);
+            }
+            
+            const data = await res.json();
+            console.log('Received response:', data);
+            
+            if (data.choices && data.choices.length > 0 && data.choices[0].message) {
+                const reply = data.choices[0].message.content;
+                updateMessage(placeholderId, reply);
+            } else {
+                throw new Error('Invalid response format from LLM');
+            }
+        } catch (err) {
+            console.error('LLM error:', err);
+            updateMessage(placeholderId, `Error: ${err.message}`);
+        }
+    }
+    
+    // Add message to chat
+    function addMessageToChat(role, content, id = null) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${role}-message`;
+        if (id) messageDiv.id = id;
+        messageDiv.textContent = content;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+    // Update message in chat
+    function updateMessage(id, content) {
+        const messageDiv = document.getElementById(id);
+        if (messageDiv) {
+            messageDiv.textContent = content;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+    
+    // Send message on button click
+    chatSend.addEventListener('click', sendMessage);
+    
+    // Send message on Enter key
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
 });
