@@ -18,31 +18,70 @@
         </header>
         
         <main>
-            <div class="options-container">
+            <!-- Initial options container -->
+            <div id="options-container" class="options-container">
                 <div class="option" data-option="1">
                     <div class="option-number">1</div>
-                    <div class="option-text">Mac OS Installation Issues</div>
+                    <div class="option-text">Technical issue (device, software, connection)</div>
                 </div>
                 
                 <div class="option" data-option="2">
                     <div class="option-number">2</div>
-                    <div class="option-text">Software Troubleshooting</div>
+                    <div class="option-text">Communication (writing, messaging)</div>
                 </div>
                 
                 <div class="option" data-option="3">
                     <div class="option-number">3</div>
-                    <div class="option-text">Hardware Problems</div>
+                    <div class="option-text">Navigation/directions</div>
                 </div>
                 
                 <div class="option" data-option="4">
                     <div class="option-number">4</div>
-                    <div class="option-text">Network Connectivity</div>
+                    <div class="option-text">Decision-making assistance</div>
                 </div>
                 
                 <div class="option" data-option="5">
                     <div class="option-number">5</div>
-                    <div class="option-text">System Performance</div>
+                    <div class="option-text">Something else</div>
                 </div>
+            </div>
+
+            <!-- Question and answers container (initially hidden) -->
+            <div id="question-container" class="question-container hidden">
+                <div class="question-header">
+                    <button id="restart-button" class="restart-button">↩ Restart</button>
+                    <span id="question-emoji" class="question-emoji">🤔</span>
+                    <h2 id="question-title" class="question-title">What kind of problem are you facing?</h2>
+                </div>
+                
+                <div id="options-list" class="options-list">
+                    <!-- Options will be dynamically generated here -->
+                </div>
+            </div>
+
+            <!-- Solution container (initially hidden) -->
+            <div id="solution-container" class="solution-container hidden">
+                <div class="solution-header">
+                    <span class="solution-emoji">🎯</span>
+                    <h2>Here's the likely issue:</h2>
+                </div>
+                <p id="solution-description" class="solution-description"></p>
+                
+                <div class="solution-steps">
+                    <span class="solution-emoji">✅</span>
+                    <h3>Try this:</h3>
+                    <ol id="solution-steps-list">
+                        <!-- Steps will be dynamically generated here -->
+                    </ol>
+                </div>
+                
+                <div class="solution-tip">
+                    <span class="solution-emoji">💡</span>
+                    <h3>Tip:</h3>
+                    <p id="solution-tip-text"></p>
+                </div>
+                
+                <button id="start-over" class="start-over-button">Start Again</button>
             </div>
         </main>
         
@@ -89,9 +128,14 @@
                 <div id="connection-status">Not connected</div>
                 <button id="test-connection">Test Connection</button>
             </div>
+            <div class="dev-section">
+                <h3>Session Log</h3>
+                <button id="copy-markdown" class="dev-menu-button">Copy Markdown Log</button>
+                <div id="copy-status" class="connection-status">Ready to copy</div>
+            </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" type="module"></script>
 </body>
 </html>
