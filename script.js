@@ -222,15 +222,18 @@ document.addEventListener('DOMContentLoaded', () => {
         options.push(match[1].trim());
       }
 
-      // Create option elements
-      optionsList.innerHTML = '';
+      // Create a new options group
+      const newOptionsGroup = document.createElement('div');
+      newOptionsGroup.className = 'options-group current';
+      
+      // Create option elements in the new group
       options.forEach((option, index) => {
         const optionItem = document.createElement('div');
         optionItem.className = 'option-item';
         optionItem.innerHTML = `
-                    <div class="option-item-number">${index + 1}</div>
-                    <div class="option-item-text">${option}</div>
-                `;
+          <div class="option-item-number">${index + 1}</div>
+          <div class="option-item-text">${option}</div>
+        `;
 
         // Add click event
         optionItem.addEventListener('click', () => {
@@ -241,15 +244,47 @@ document.addEventListener('DOMContentLoaded', () => {
           sendOptionToLLM(String(index + 1));
         });
 
-        optionsList.appendChild(optionItem);
+        newOptionsGroup.appendChild(optionItem);
       });
+      
+      // Handle existing options - mark all existing groups as previous
+      const existingGroups = optionsList.querySelectorAll('.options-group');
+      existingGroups.forEach(group => {
+        group.classList.remove('current');
+        group.classList.add('previous');
+      });
+      
+      // Clear the options list if there are too many groups
+      if (existingGroups.length >= 2) {
+        // Keep only the most recent previous group
+        while (optionsList.children.length > 1) {
+          optionsList.removeChild(optionsList.firstChild);
+        }
+      }
+      
+      // Add the new group to the options list
+      optionsList.appendChild(newOptionsGroup);
+      
+      // Ensure the new options are visible
+      optionsList.scrollTop = optionsList.scrollHeight;
+      
     } else {
       // Fallback if parsing fails
       questionEmoji.textContent = '🤔';
       questionTitle.textContent = 'What would you like to do?';
 
-      // Display raw response
-      optionsList.innerHTML = `<div class="option-item">${response}</div>`;
+      // Create a new group for the fallback content
+      const newOptionsGroup = document.createElement('div');
+      newOptionsGroup.className = 'options-group current';
+      
+      const optionItem = document.createElement('div');
+      optionItem.className = 'option-item';
+      optionItem.textContent = response;
+      newOptionsGroup.appendChild(optionItem);
+      
+      // Clear and add the new group to the options list
+      optionsList.innerHTML = '';
+      optionsList.appendChild(newOptionsGroup);
     }
   }
 
@@ -330,7 +365,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clear any displayed content
     questionEmoji.textContent = '🤔';
     questionTitle.textContent = 'What would you like to do?';
+    
+    // Clear all option groups
     optionsList.innerHTML = '';
+    
+    // Reset other elements
     solutionDescription.textContent = '';
     solutionStepsList.innerHTML = '';
     solutionTipText.textContent = '';

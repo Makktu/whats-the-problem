@@ -118,6 +118,8 @@ main {
     margin: 0 auto;
     opacity: 1;
     transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .question-container.hidden {
@@ -129,6 +131,11 @@ main {
     display: flex;
     align-items: center;
     margin-bottom: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--bg-primary);
+    padding-bottom: 1rem;
 }
 
 .question-emoji {
@@ -145,6 +152,52 @@ main {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+    scroll-behavior: smooth;
+    position: relative;
+}
+
+.options-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.options-list::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+}
+
+.options-list::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
+}
+
+.options-list::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-hover);
+}
+
+.options-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.5s ease;
+    width: 100%;
+    position: relative;
+}
+
+.options-group.previous {
+    opacity: 0.6;
+    transform: translateY(-20px);
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--option-hover);
+    padding-bottom: 1.5rem;
+    pointer-events: none;
+}
+
+.options-group.current {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .option-item {
