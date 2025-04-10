@@ -7,7 +7,7 @@ class ApiService {
     this.localEndpoint = "http://localhost:1234/v1/chat/completions";
     this.openRouterEndpoint = "https://openrouter.ai/api/v1/chat/completions";
     this.defaultModel = "local-model";
-    this.openRouterModel = "openai/gpt-3.5-turbo"; // Default OpenRouter model
+    this.openRouterModel = "openrouter/optimus-alpha"; // Default OpenRouter model - change at will
   }
 
   toggleApiSource(useOpenRouter) {
@@ -46,13 +46,24 @@ class ApiService {
       headers['X-Title'] = "What's The Problem?"; // Optional app name for OpenRouter
     }
 
+    // Create payload with strict model enforcement for OpenRouter
     const payload = {
       model: model,
       messages: messages,
       temperature: temperature,
     };
+    
+    // Add OpenRouter-specific parameters to prevent model fallback
+    if (this.useOpenRouter) {
+      payload.route = "fallback:none"; // Strict setting to prevent any fallback
+      payload.transforms = ["middle-out"];
+      // Force specific model only
+      payload.models = [model];
+    }
 
     console.log('Sending payload to', endpoint);
+    console.log('Using model:', model);
+    console.log('Full payload:', JSON.stringify(payload, null, 2));
     
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -67,7 +78,21 @@ class ApiService {
       );
     }
 
-    return await response.json();
+    const data = await response.json();
+    
+    // Verify the model used matches what we requested (for OpenRouter)
+    if (this.useOpenRouter && data.model && data.model !== model) {
+      // Special handling for ":free" suffix models - OpenRouter returns the model name without the suffix
+      const requestedModelBase = model.split(':')[0];
+      if (data.model === requestedModelBase && model.endsWith(':free')) {
+        console.log(`Model returned without :free suffix. Requested: ${model}, Received: ${data.model}. This is acceptable.`);
+      } else {
+        console.error(`Model mismatch! Requested: ${model}, Received: ${data.model}`);
+        throw new Error(`Model mismatch! The API used ${data.model} instead of the requested ${model}. Request aborted.`);
+      }
+    }
+    
+    return data;
   }
 
   async testConnection() {
@@ -85,6 +110,7 @@ class ApiService {
       headers['X-Title'] = "What's The Problem?"; // Optional app name for OpenRouter
     }
 
+    // Create payload with strict model enforcement for OpenRouter
     const payload = {
       model: model,
       messages: [
@@ -93,6 +119,17 @@ class ApiService {
       ],
       temperature: 0.7,
     };
+    
+    // Add OpenRouter-specific parameters to prevent model fallback
+    if (this.useOpenRouter) {
+      payload.route = "fallback:none"; // Strict setting to prevent any fallback
+      payload.transforms = ["middle-out"];
+      // Force specific model only
+      payload.models = [model];
+    }
+    
+    console.log('Testing connection with model:', model);
+    console.log('Full payload:', JSON.stringify(payload, null, 2));
     
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -107,7 +144,21 @@ class ApiService {
       );
     }
 
-    return await response.json();
+    const data = await response.json();
+    
+    // Verify the model used matches what we requested (for OpenRouter)
+    if (this.useOpenRouter && data.model && data.model !== model) {
+      // Special handling for ":free" suffix models - OpenRouter returns the model name without the suffix
+      const requestedModelBase = model.split(':')[0];
+      if (data.model === requestedModelBase && model.endsWith(':free')) {
+        console.log(`Model returned without :free suffix. Requested: ${model}, Received: ${data.model}. This is acceptable.`);
+      } else {
+        console.error(`Model mismatch! Requested: ${model}, Received: ${data.model}`);
+        throw new Error(`Model mismatch! The API used ${data.model} instead of the requested ${model}. Request aborted.`);
+      }
+    }
+    
+    return data;
   }
 }
 

@@ -48,12 +48,15 @@
 
             <!-- Question and answers container (initially hidden) -->
             <div id="question-container" class="question-container hidden">
-                <div class="question-header">
+                <div class="app-header">
                     <button id="restart-button" class="restart-button">↩ Restart</button>
-                    <span id="question-emoji" class="question-emoji">🤔</span>
-                    <h2 id="question-title" class="question-title">What kind of problem are you facing?</h2>
-                </div>
-                
+
+                    <div class="question-title-wrapper">
+                        <span id="question-emoji" class="question-emoji">🤔</span>
+                        <h4 id="question-title" class="question-title">What kind of problem are you facing?</h4>
+                    </div>
+                    
+                </div>                
                 <div id="options-list" class="options-list">
                     <!-- Options will be dynamically generated here -->
                 </div>
@@ -126,7 +129,19 @@
                 </div>
                 <div class="settings-group">
                     <label for="openrouter-model">OpenRouter Model:</label>
-                    <input type="text" id="openrouter-model" value="openai/gpt-3.5-turbo">
+                    <select id="openrouter-model" class="model-select">
+                        <option value="openrouter/optimus-alpha">Optimus Alpha</option>
+                        <option value="google/gemini-2.5-pro-exp-03-25:free">Gemini 2.5 Pro (Free)</option>
+                        <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Free)</option>
+                        <option value="qwen/qwq-32b:free">Qwen QWQ 32B (Free)</option>
+                        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B Instruct (Free)</option>
+                        <option value="meta-llama/llama-4-maverick:free">Llama 4 Maverick (Free)</option>
+                        <option value="meta-llama/llama-4-scout:free">Llama 4 Scout (Free)</option>
+                        <option value="google/gemma-3-27b-it:free">Gemma 3 27B (Free)</option>
+                        <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                        <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
+                        <option value="nousresearch/hermes-3-llama-3.1-405b">Hermes 3 Llama 3.1 405B</option>
+                    </select>
                 </div>
                 <div class="settings-group">
                     <label for="llm-temperature">Temperature:</label>

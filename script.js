@@ -62,11 +62,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Update OpenRouter model when dropdown changes
   openRouterModelInput.addEventListener('change', () => {
-    apiService.setOpenRouterModel(openRouterModelInput.value);
+    const selectedModel = openRouterModelInput.value;
+    const selectedModelText = openRouterModelInput.options[openRouterModelInput.selectedIndex].text;
+    
+    apiService.setOpenRouterModel(selectedModel);
+    
     if (apiToggle.checked) {
       modelInput.value = apiService.getModel();
+      console.log(`Model changed to: ${selectedModel} (${selectedModelText})`);
     }
+    
+    // Reset connection status since we changed the model
+    connectionStatus.textContent = 'Using OpenRouter API (not tested)';
+    connectionStatus.style.color = '';
   });
 
   // Initial options setup
