@@ -110,8 +110,23 @@
             <div class="dev-section">
                 <h3>LLM Settings</h3>
                 <div class="settings-group">
-                    <label for="llm-endpoint">Endpoint URL:</label>
+                    <label for="api-toggle">API Source:</label>
+                    <div class="toggle-container">
+                        <span class="toggle-label">Local</span>
+                        <label class="switch">
+                            <input type="checkbox" id="api-toggle">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="toggle-label">OpenRouter</span>
+                    </div>
+                </div>
+                <div class="settings-group">
+                    <label for="llm-endpoint">Local Endpoint URL:</label>
                     <input type="text" id="llm-endpoint" value="http://localhost:1234/v1/chat/completions">
+                </div>
+                <div class="settings-group">
+                    <label for="openrouter-model">OpenRouter Model:</label>
+                    <input type="text" id="openrouter-model" value="openai/gpt-3.5-turbo">
                 </div>
                 <div class="settings-group">
                     <label for="llm-temperature">Temperature:</label>
@@ -119,8 +134,8 @@
                     <span id="temperature-value">0.7</span>
                 </div>
                 <div class="settings-group">
-                    <label for="llm-model">Model Name:</label>
-                    <input type="text" id="llm-model" value="local-model">
+                    <label for="llm-model">Current Model:</label>
+                    <input type="text" id="llm-model" value="local-model" readonly>
                 </div>
             </div>
             <div class="dev-section">
@@ -133,22 +148,9 @@
                 <button id="copy-markdown" class="dev-menu-button">Copy Markdown Log</button>
                 <div id="copy-status" class="connection-status">Ready to copy</div>
             </div>
-            <div id="dev-panel" class="dev-panel">
-                <h3>Developer Panel</h3>
-                <div class="dev-options">
-                    <label for="llm-toggle">Use Online LLM:</label>
-                    <label class="switch">
-                        <input type="checkbox" id="llm-toggle">
-                        <span class="slider round"></span>
-                    </label>
-                    <!-- Add more dev options here -->
-                </div>
-            </div>
         </div>
     </div>
 
-    <script src="systemPrompt.js"></script>
-    <script src="secrets.js"></script> <!-- Load secrets -->
     <script src="script.js" type="module"></script>
 </body>
 </html>

@@ -589,6 +589,73 @@ footer {
     flex: 1;
 }
 
+/* Toggle Switch Styles */
+.toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.toggle-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--option-bg);
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--text-primary);
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: var(--accent-color);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--accent-color);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 24px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
 /* Responsive adjustments */
 @media (min-width: 768px) {
     .options-container {
@@ -666,92 +733,4 @@ footer {
     .solution-tip p {
         font-size: 1rem;
     }
-}
-
-/* --- Dev Panel --- */
-.dev-panel {
-    background-color: #444;
-    color: #eee;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-    position: fixed; /* Keep it fixed relative to viewport */
-    bottom: 10px; /* Position at the bottom */
-    right: 10px; /* Position at the right */
-    z-index: 1001; /* Ensure it's above other content */
-    max-width: 300px; /* Optional: constrain width */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-}
-
-.dev-panel h3 {
-    margin-top: 0;
-    border-bottom: 1px solid #666;
-    padding-bottom: 5px;
-}
-
-.dev-options {
-    display: flex;
-    align-items: center; /* Vertically align items */
-    gap: 10px; /* Space between label and switch */
-}
-
-/* --- Toggle Switch Styles --- */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 50px; /* Smaller width */
-  height: 24px; /* Smaller height */
-}
-
-.switch input { 
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px; /* Smaller handle */
-  width: 18px; /* Smaller handle */
-  left: 3px; /* Adjust position */
-  bottom: 3px; /* Adjust position */
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 24px; /* Adjust for height */
-}
-
-.slider.round:before {
-  border-radius: 50%;
 }

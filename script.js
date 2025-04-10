@@ -1,5 +1,5 @@
 import systemPrompt from './systemPrompt.js';
-import secrets from './secrets.js';
+import apiService from './apiService.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Main UI elements
@@ -29,14 +29,45 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyMarkdownButton = document.getElementById('copy-markdown');
   const copyStatus = document.getElementById('copy-status');
   const modelInput = document.getElementById('llm-model');
-  const llmToggle = document.getElementById('llm-toggle'); // Get the toggle switch
+  const apiToggle = document.getElementById('api-toggle');
+  const localEndpointInput = document.getElementById('llm-endpoint');
+  const openRouterModelInput = document.getElementById('openrouter-model');
 
   // State management
   let conversationHistory = [];
   let currentQuestion = '';
   let markdownLog = '';
   let sessionStartTime = '';
-  let useOnlineLLM = false; // Default to local
+
+  // Initialize API settings
+  apiToggle.addEventListener('change', () => {
+    const useOpenRouter = apiToggle.checked;
+    apiService.toggleApiSource(useOpenRouter);
+    
+    // Update the model display
+    modelInput.value = apiService.getModel();
+    
+    // Update connection status
+    connectionStatus.textContent = useOpenRouter ? 
+      'Using OpenRouter API (not tested)' : 
+      'Using Local API (not tested)';
+    connectionStatus.style.color = '';
+  });
+
+  // Update API settings when inputs change
+  localEndpointInput.addEventListener('change', () => {
+    apiService.setLocalEndpoint(localEndpointInput.value);
+    if (!apiToggle.checked) {
+      modelInput.value = apiService.getModel();
+    }
+  });
+
+  openRouterModelInput.addEventListener('change', () => {
+    apiService.setOpenRouterModel(openRouterModelInput.value);
+    if (apiToggle.checked) {
+      modelInput.value = apiService.getModel();
+    }
+  });
 
   // Initial options setup
   const initialOptions = document.querySelectorAll('.option');
@@ -135,52 +166,13 @@ document.addEventListener('DOMContentLoaded', () => {
       questionTitle.textContent = 'Thinking...';
       optionsList.innerHTML = '';
 
-      // Get LLM settings
-      const endpoint = document.getElementById('llm-endpoint').value;
-      const model = document.getElementById('llm-model').value;
+      // Get temperature setting
       const temperature = parseFloat(temperatureSlider.value);
 
-      // Send request to LLM
-      const payload = {
-        model: model,
-        messages: conversationHistory,
-        temperature: temperature,
-      };
+      console.log('Sending conversation to API service:', conversationHistory);
 
-      console.log('Sending payload:', JSON.stringify(payload, null, 2));
-
-      let response;
-      if (useOnlineLLM) {
-        // --- Online LLM (OpenRouter) ---
-        if (!secrets.OPENROUTER_API_KEY || secrets.OPENROUTER_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
-          throw new Error('OpenRouter API key is missing or not set in secrets.js');
-        }
-        console.log('Calling OpenRouter API...');
-        response = await fetch(secrets.OPENROUTER_API_URL, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${secrets.OPENROUTER_API_KEY}`,
-            'HTTP-Referer': window.location.href, // Recommended for OpenRouter
-            'X-Title': 'Whats The Problem', // Recommended for OpenRouter
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`OpenRouter API Error (${response.status}): ${errorData.error?.message || 'Unknown error'}`);
-        }
-      } else {
-        // --- Local LLM (Existing Logic) ---
-        response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-      }
-
-      const data = await response.json();
+      // Use the API service to send the request
+      const data = await apiService.sendRequest(conversationHistory, temperature);
       console.log('Received response:', data);
 
       // Update model name display if available in the response
@@ -416,40 +408,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Test connection to LLM
   testConnection.addEventListener('click', async () => {
-    const endpoint = document.getElementById('llm-endpoint').value;
     connectionStatus.textContent = 'Testing connection...';
 
     try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: document.getElementById('llm-model').value,
-          messages: [
-            { role: 'system', content: 'You are a helpful assistant.' },
-            { role: 'user', content: 'Hello' },
-          ],
-          temperature: parseFloat(temperatureSlider.value),
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        connectionStatus.textContent = 'Connected successfully!';
-        connectionStatus.style.color = '#4caf50';
-
-        // Update model name display if available in the response
-        if (data.model) {
-          updateModelNameDisplay(data.model);
-        }
+      // Update API service settings from UI
+      if (!apiToggle.checked) {
+        apiService.setLocalEndpoint(localEndpointInput.value);
       } else {
-        const errorData = await response.json().catch(() => ({}));
-        const errorMessage =
-          errorData.error?.message ||
-          `${response.status} ${response.statusText}`;
-        connectionStatus.textContent = `Error: ${errorMessage}`;
-        connectionStatus.style.color = '#f44336';
-        console.error('Connection error:', errorData);
+        apiService.setOpenRouterModel(openRouterModelInput.value);
+      }
+
+      // Test the connection using the API service
+      const data = await apiService.testConnection();
+      
+      connectionStatus.textContent = 'Connected successfully!';
+      connectionStatus.style.color = '#4caf50';
+
+      // Update model name display if available in the response
+      if (data.model) {
+        updateModelNameDisplay(data.model);
       }
     } catch (err) {
       connectionStatus.textContent = `Error: ${err.message}`;
@@ -467,9 +444,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addMessageToChat('user', userInput);
     chatInput.value = '';
 
-    // Get LLM settings
-    const endpoint = document.getElementById('llm-endpoint').value;
-    const model = document.getElementById('llm-model').value;
+    // Get temperature setting
     const temperature = parseFloat(temperatureSlider.value);
 
     // Create placeholder for LLM response
@@ -478,49 +453,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Send request to LLM
     try {
-      const payload = {
-        model: model,
-        messages: [
-          { role: 'system', content: 'You are a helpful assistant.' },
-          { role: 'user', content: userInput },
-        ],
-        temperature: temperature,
-      };
+      // Create a simple conversation for the developer chat
+      const messages = [
+        { role: 'system', content: 'You are a helpful assistant.' },
+        { role: 'user', content: userInput },
+      ];
 
-      console.log('Sending payload:', JSON.stringify(payload, null, 2));
-
-      let response;
-      if (useOnlineLLM) {
-        // --- Online LLM (OpenRouter) ---
-        if (!secrets.OPENROUTER_API_KEY || secrets.OPENROUTER_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
-          throw new Error('OpenRouter API key is missing or not set in secrets.js');
-        }
-        console.log('Calling OpenRouter API...');
-        response = await fetch(secrets.OPENROUTER_API_URL, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${secrets.OPENROUTER_API_KEY}`,
-            'HTTP-Referer': window.location.href, // Recommended for OpenRouter
-            'X-Title': 'Whats The Problem', // Recommended for OpenRouter
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`OpenRouter API Error (${response.status}): ${errorData.error?.message || 'Unknown error'}`);
-        }
-      } else {
-        // --- Local LLM (Existing Logic) ---
-        response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-      }
-
-      const data = await response.json();
+      // Send the request using the API service
+      const data = await apiService.sendRequest(messages, temperature);
       console.log('Received response:', data);
 
       if (data.choices && data.choices.length > 0 && data.choices[0].message) {
@@ -591,19 +531,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update model name display
   function updateModelNameDisplay(modelName) {
     if (modelName && modelName !== modelInput.value) {
-      // Limit to 25 characters if needed
+      // Limit to 40 characters if needed
       const displayName =
         modelName.length > 40 ? modelName.substring(0, 40) + '...' : modelName;
       modelInput.value = displayName;
       console.log(`Updated model name display to: ${displayName}`);
     }
   }
-
-  // Add listener for the toggle switch
-  llmToggle.addEventListener('change', (event) => {
-    useOnlineLLM = event.target.checked;
-    console.log(`Switched to ${useOnlineLLM ? 'Online' : 'Local'} LLM`);
-    // Optional: You might want to clear the chat or warn the user
-    // initializeChat(); // Example: Reset chat on LLM change
-  });
 });
