@@ -1,4 +1,5 @@
 import systemPrompt from './systemPrompt.js';
+import secrets from './secrets.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   // Main UI elements
@@ -28,12 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const copyMarkdownButton = document.getElementById('copy-markdown');
   const copyStatus = document.getElementById('copy-status');
   const modelInput = document.getElementById('llm-model');
+  const llmToggle = document.getElementById('llm-toggle'); // Get the toggle switch
 
   // State management
   let conversationHistory = [];
   let currentQuestion = '';
   let markdownLog = '';
   let sessionStartTime = '';
+  let useOnlineLLM = false; // Default to local
 
   // Initial options setup
   const initialOptions = document.querySelectorAll('.option');
@@ -146,20 +149,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
       console.log('Sending payload:', JSON.stringify(payload, null, 2));
 
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      let response;
+      if (useOnlineLLM) {
+        // --- Online LLM (OpenRouter) ---
+        if (!secrets.OPENROUTER_API_KEY || secrets.OPENROUTER_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
+          throw new Error('OpenRouter API key is missing or not set in secrets.js');
+        }
+        console.log('Calling OpenRouter API...');
+        response = await fetch(secrets.OPENROUTER_API_URL, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${secrets.OPENROUTER_API_KEY}`,
+            'HTTP-Referer': window.location.href, // Recommended for OpenRouter
+            'X-Title': 'Whats The Problem', // Recommended for OpenRouter
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload),
+        });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.error?.message || `HTTP error: ${res.status}`
-        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`OpenRouter API Error (${response.status}): ${errorData.error?.message || 'Unknown error'}`);
+        }
+      } else {
+        // --- Local LLM (Existing Logic) ---
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
       }
 
-      const data = await res.json();
+      const data = await response.json();
       console.log('Received response:', data);
 
       // Update model name display if available in the response
@@ -468,20 +489,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
       console.log('Sending payload:', JSON.stringify(payload, null, 2));
 
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      let response;
+      if (useOnlineLLM) {
+        // --- Online LLM (OpenRouter) ---
+        if (!secrets.OPENROUTER_API_KEY || secrets.OPENROUTER_API_KEY === 'YOUR_OPENROUTER_API_KEY_HERE') {
+          throw new Error('OpenRouter API key is missing or not set in secrets.js');
+        }
+        console.log('Calling OpenRouter API...');
+        response = await fetch(secrets.OPENROUTER_API_URL, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${secrets.OPENROUTER_API_KEY}`,
+            'HTTP-Referer': window.location.href, // Recommended for OpenRouter
+            'X-Title': 'Whats The Problem', // Recommended for OpenRouter
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload),
+        });
 
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(
-          errorData.error?.message || `HTTP error: ${res.status}`
-        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`OpenRouter API Error (${response.status}): ${errorData.error?.message || 'Unknown error'}`);
+        }
+      } else {
+        // --- Local LLM (Existing Logic) ---
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
       }
 
-      const data = await res.json();
+      const data = await response.json();
       console.log('Received response:', data);
 
       if (data.choices && data.choices.length > 0 && data.choices[0].message) {
@@ -559,4 +598,12 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log(`Updated model name display to: ${displayName}`);
     }
   }
+
+  // Add listener for the toggle switch
+  llmToggle.addEventListener('change', (event) => {
+    useOnlineLLM = event.target.checked;
+    console.log(`Switched to ${useOnlineLLM ? 'Online' : 'Local'} LLM`);
+    // Optional: You might want to clear the chat or warn the user
+    // initializeChat(); // Example: Reset chat on LLM change
+  });
 });

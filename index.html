@@ -133,9 +133,22 @@
                 <button id="copy-markdown" class="dev-menu-button">Copy Markdown Log</button>
                 <div id="copy-status" class="connection-status">Ready to copy</div>
             </div>
+            <div id="dev-panel" class="dev-panel">
+                <h3>Developer Panel</h3>
+                <div class="dev-options">
+                    <label for="llm-toggle">Use Online LLM:</label>
+                    <label class="switch">
+                        <input type="checkbox" id="llm-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <!-- Add more dev options here -->
+                </div>
+            </div>
         </div>
     </div>
 
+    <script src="systemPrompt.js"></script>
+    <script src="secrets.js"></script> <!-- Load secrets -->
     <script src="script.js" type="module"></script>
 </body>
 </html>

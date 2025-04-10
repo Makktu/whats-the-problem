@@ -38,3 +38,6 @@ Thumbs.db
 
 # Project specific files to keep private
 systemPrompt.js
+
+# Secrets
+secrets.js
