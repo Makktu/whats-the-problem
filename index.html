@@ -1,171 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>What's The Problem?</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <h1>What's The Problem?</h1>
-            <p class="subtitle">Select a category to begin</p>
-            <button id="dev-menu-toggle" class="dev-menu-toggle">Dev Menu</button>
-        </header>
-        
-        <main>
-            <!-- Initial options container -->
-            <div id="options-container" class="options-container">
-                <div class="option" data-option="1">
-                    <div class="option-number">1</div>
-                    <div class="option-text">Technical issue (device, software, connection)</div>
-                </div>
-                
-                <div class="option" data-option="2">
-                    <div class="option-number">2</div>
-                    <div class="option-text">Communication (writing, messaging)</div>
-                </div>
-                
-                <div class="option" data-option="3">
-                    <div class="option-number">3</div>
-                    <div class="option-text">Navigation/directions</div>
-                </div>
-                
-                <div class="option" data-option="4">
-                    <div class="option-number">4</div>
-                    <div class="option-text">Decision-making assistance</div>
-                </div>
-                
-                <div class="option" data-option="5">
-                    <div class="option-number">5</div>
-                    <div class="option-text">Something else</div>
-                </div>
-            </div>
+      <header>
+        <h1>What's The Problem?</h1>
+        <p class="subtitle">Select a category to begin</p>
+        <button id="dev-menu-toggle" class="dev-menu-toggle">Dev Menu</button>
+      </header>
 
-            <!-- Question and answers container (initially hidden) -->
-            <div id="question-container" class="question-container hidden">
-                <div class="app-header">
-                    <button id="restart-button" class="restart-button">↩ Restart</button>
-
-                    <div class="question-title-wrapper">
-                        <span id="question-emoji" class="question-emoji">🤔</span>
-                        <h4 id="question-title" class="question-title">What kind of problem are you facing?</h4>
-                    </div>
-                    
-                </div>                
-                <div id="options-list" class="options-list">
-                    <!-- Options will be dynamically generated here -->
-                </div>
+      <main>
+        <!-- Initial options container -->
+        <div id="options-container" class="options-container">
+          <div class="option" data-option="1">
+            <div class="option-number">1</div>
+            <div class="option-text">
+              Technical issue (device, software, connection)
             </div>
+          </div>
 
-            <!-- Solution container (initially hidden) -->
-            <div id="solution-container" class="solution-container hidden">
-                <div class="solution-header">
-                    <span class="solution-emoji">🎯</span>
-                    <h2>Here's the likely issue:</h2>
-                </div>
-                <p id="solution-description" class="solution-description"></p>
-                
-                <div class="solution-steps">
-                    <span class="solution-emoji">✅</span>
-                    <h3>Try this:</h3>
-                    <ol id="solution-steps-list">
-                        <!-- Steps will be dynamically generated here -->
-                    </ol>
-                </div>
-                
-                <div class="solution-tip">
-                    <span class="solution-emoji">💡</span>
-                    <h3>Tip:</h3>
-                    <p id="solution-tip-text"></p>
-                </div>
-                
-                <button id="start-over" class="start-over-button">Start Again</button>
+          <div class="option" data-option="2">
+            <div class="option-number">2</div>
+            <div class="option-text">Communication (writing, messaging)</div>
+          </div>
+
+          <div class="option" data-option="3">
+            <div class="option-number">3</div>
+            <div class="option-text">Navigation/directions</div>
+          </div>
+
+          <div class="option" data-option="4">
+            <div class="option-number">4</div>
+            <div class="option-text">Decision-making assistance</div>
+          </div>
+
+          <div class="option" data-option="5">
+            <div class="option-number">5</div>
+            <div class="option-text">Something else</div>
+          </div>
+        </div>
+
+        <!-- Question and answers container (initially hidden) -->
+        <div id="question-container" class="question-container hidden">
+          <div class="app-header">
+            <button id="restart-button" class="restart-button">
+              ↩ Restart
+            </button>
+
+            <div class="question-title-wrapper">
+              <span id="question-emoji" class="question-emoji">🤔</span>
+              <h2 id="question-title" class="question-title">
+                What kind of problem are you facing?
+              </h2>
             </div>
-        </main>
-        
-        <footer>
-            <p> 2025 What's The Problem? - A guided AI troubleshooting interface</p>
-        </footer>
+          </div>
+          <div id="options-list" class="options-list">
+            <!-- Options will be dynamically generated here -->
+          </div>
+        </div>
+
+        <!-- Solution container (initially hidden) -->
+        <div id="solution-container" class="solution-container hidden">
+          <div class="solution-header">
+            <span class="solution-emoji">🎯</span>
+            <h2>Here's the likely issue:</h2>
+          </div>
+          <p id="solution-description" class="solution-description"></p>
+
+          <div class="solution-steps">
+            <span class="solution-emoji">✅</span>
+            <h3>Try this:</h3>
+            <ol id="solution-steps-list">
+              <!-- Steps will be dynamically generated here -->
+            </ol>
+          </div>
+
+          <div class="solution-tip">
+            <span class="solution-emoji">💡</span>
+            <h3>Tip:</h3>
+            <p id="solution-tip-text"></p>
+          </div>
+
+          <button id="start-over" class="start-over-button">Start Again</button>
+        </div>
+      </main>
+
+      <footer>
+        <p>2025 What's The Problem? - A guided AI troubleshooting interface</p>
+      </footer>
     </div>
 
     <!-- Developer Menu Panel -->
     <div id="dev-menu" class="dev-menu">
-        <div class="dev-menu-header">
-            <h2>Developer Menu</h2>
-            <button id="dev-menu-close" class="dev-menu-close">×</button>
+      <div class="dev-menu-header">
+        <h2>Developer Menu</h2>
+        <button id="dev-menu-close" class="dev-menu-close">×</button>
+      </div>
+      <div class="dev-menu-content">
+        <div class="dev-section">
+          <h3>LLM Chat Test</h3>
+          <div id="chat-container">
+            <div id="chat-messages"></div>
+            <div class="chat-input-container">
+              <input
+                type="text"
+                id="chat-input"
+                placeholder="Type a message to the LLM..."
+              />
+              <button id="chat-send">Send</button>
+            </div>
+          </div>
         </div>
-        <div class="dev-menu-content">
-            <div class="dev-section">
-                <h3>LLM Chat Test</h3>
-                <div id="chat-container">
-                    <div id="chat-messages"></div>
-                    <div class="chat-input-container">
-                        <input type="text" id="chat-input" placeholder="Type a message to the LLM...">
-                        <button id="chat-send">Send</button>
-                    </div>
-                </div>
+        <div class="dev-section">
+          <h3>LLM Settings</h3>
+          <div class="settings-group">
+            <label for="api-toggle">API Source:</label>
+            <div class="toggle-container">
+              <span class="toggle-label">Local</span>
+              <label class="switch">
+                <input type="checkbox" id="api-toggle" />
+                <span class="slider round"></span>
+              </label>
+              <span class="toggle-label">OpenRouter</span>
             </div>
-            <div class="dev-section">
-                <h3>LLM Settings</h3>
-                <div class="settings-group">
-                    <label for="api-toggle">API Source:</label>
-                    <div class="toggle-container">
-                        <span class="toggle-label">Local</span>
-                        <label class="switch">
-                            <input type="checkbox" id="api-toggle">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="toggle-label">OpenRouter</span>
-                    </div>
-                </div>
-                <div class="settings-group">
-                    <label for="llm-endpoint">Local Endpoint URL:</label>
-                    <input type="text" id="llm-endpoint" value="http://localhost:1234/v1/chat/completions">
-                </div>
-                <div class="settings-group">
-                    <label for="openrouter-model">OpenRouter Model:</label>
-                    <select id="openrouter-model" class="model-select">
-                        <option value="openrouter/optimus-alpha">Optimus Alpha</option>
-                        <option value="google/gemini-2.5-pro-exp-03-25:free">Gemini 2.5 Pro (Free)</option>
-                        <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Free)</option>
-                        <option value="qwen/qwq-32b:free">Qwen QWQ 32B (Free)</option>
-                        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B Instruct (Free)</option>
-                        <option value="meta-llama/llama-4-maverick:free">Llama 4 Maverick (Free)</option>
-                        <option value="meta-llama/llama-4-scout:free">Llama 4 Scout (Free)</option>
-                        <option value="google/gemma-3-27b-it:free">Gemma 3 27B (Free)</option>
-                        <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
-                        <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet</option>
-                        <option value="nousresearch/hermes-3-llama-3.1-405b">Hermes 3 Llama 3.1 405B</option>
-                    </select>
-                </div>
-                <div class="settings-group">
-                    <label for="llm-temperature">Temperature:</label>
-                    <input type="range" id="llm-temperature" min="0" max="1" step="0.1" value="0.7">
-                    <span id="temperature-value">0.7</span>
-                </div>
-                <div class="settings-group">
-                    <label for="llm-model">Current Model:</label>
-                    <input type="text" id="llm-model" value="local-model" readonly>
-                </div>
-            </div>
-            <div class="dev-section">
-                <h3>Connection Status</h3>
-                <div id="connection-status">Not connected</div>
-                <button id="test-connection">Test Connection</button>
-            </div>
-            <div class="dev-section">
-                <h3>Session Log</h3>
-                <button id="copy-markdown" class="dev-menu-button">Copy Markdown Log</button>
-                <div id="copy-status" class="connection-status">Ready to copy</div>
-            </div>
+          </div>
+          <div class="settings-group">
+            <label for="llm-endpoint">Local Endpoint URL:</label>
+            <input
+              type="text"
+              id="llm-endpoint"
+              value="http://localhost:1234/v1/chat/completions"
+            />
+          </div>
+          <div class="settings-group">
+            <label for="openrouter-model">OpenRouter Model:</label>
+            <select id="openrouter-model" class="model-select">
+              <option value="openrouter/optimus-alpha">Optimus Alpha</option>
+              <option value="google/gemini-2.5-pro-exp-03-25:free">
+                Gemini 2.5 Pro (Free)
+              </option>
+              <option value="deepseek/deepseek-r1:free">
+                DeepSeek R1 (Free)
+              </option>
+              <option value="qwen/qwq-32b:free">Qwen QWQ 32B (Free)</option>
+              <option value="meta-llama/llama-3.3-70b-instruct:free">
+                Llama 3.3 70B Instruct (Free)
+              </option>
+              <option value="meta-llama/llama-4-maverick:free">
+                Llama 4 Maverick (Free)
+              </option>
+              <option value="meta-llama/llama-4-scout:free">
+                Llama 4 Scout (Free)
+              </option>
+              <option value="google/gemma-3-27b-it:free">
+                Gemma 3 27B (Free)
+              </option>
+              <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+              <option value="anthropic/claude-3.5-sonnet">
+                Claude 3.5 Sonnet
+              </option>
+              <option value="nousresearch/hermes-3-llama-3.1-405b">
+                Hermes 3 Llama 3.1 405B
+              </option>
+            </select>
+          </div>
+          <div class="settings-group">
+            <label for="llm-temperature">Temperature:</label>
+            <input
+              type="range"
+              id="llm-temperature"
+              min="0"
+              max="1"
+              step="0.1"
+              value="0.7"
+            />
+            <span id="temperature-value">0.7</span>
+          </div>
+          <div class="settings-group">
+            <label for="llm-model">Current Model:</label>
+            <input type="text" id="llm-model" value="local-model" readonly />
+          </div>
         </div>
+        <div class="dev-section">
+          <h3>Connection Status</h3>
+          <div id="connection-status">Not connected</div>
+          <button id="test-connection">Test Connection</button>
+        </div>
+        <div class="dev-section">
+          <h3>Session Log</h3>
+          <button id="copy-markdown" class="dev-menu-button">
+            Copy Markdown Log
+          </button>
+          <div id="copy-status" class="connection-status">Ready to copy</div>
+        </div>
+      </div>
     </div>
 
     <script src="script.js" type="module"></script>
-</body>
+  </body>
 </html>

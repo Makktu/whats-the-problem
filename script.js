@@ -43,14 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
   apiToggle.addEventListener('change', () => {
     const useOpenRouter = apiToggle.checked;
     apiService.toggleApiSource(useOpenRouter);
-    
+
     // Update the model display
     modelInput.value = apiService.getModel();
-    
+
     // Update connection status
-    connectionStatus.textContent = useOpenRouter ? 
-      'Using OpenRouter API (not tested)' : 
-      'Using Local API (not tested)';
+    connectionStatus.textContent = useOpenRouter
+      ? 'Using OpenRouter API (not tested)'
+      : 'Using Local API (not tested)';
     connectionStatus.style.color = '';
   });
 
@@ -65,15 +65,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Update OpenRouter model when dropdown changes
   openRouterModelInput.addEventListener('change', () => {
     const selectedModel = openRouterModelInput.value;
-    const selectedModelText = openRouterModelInput.options[openRouterModelInput.selectedIndex].text;
-    
+    const selectedModelText =
+      openRouterModelInput.options[openRouterModelInput.selectedIndex].text;
+
     apiService.setOpenRouterModel(selectedModel);
-    
+
     if (apiToggle.checked) {
       modelInput.value = apiService.getModel();
       console.log(`Model changed to: ${selectedModel} (${selectedModelText})`);
     }
-    
+
     // Reset connection status since we changed the model
     connectionStatus.textContent = 'Using OpenRouter API (not tested)';
     connectionStatus.style.color = '';
@@ -182,7 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('Sending conversation to API service:', conversationHistory);
 
       // Use the API service to send the request
-      const data = await apiService.sendRequest(conversationHistory, temperature);
+      const data = await apiService.sendRequest(
+        conversationHistory,
+        temperature
+      );
       console.log('Received response:', data);
 
       // Update model name display if available in the response
@@ -228,13 +232,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function displayQuestion(response) {
     // Parse the response to extract emoji, title, and options
     const emojiMatch = response.match(/\*\*([^\*]+)\s([^\*]+)\*\*/);
+    console.log(emojiMatch);
     if (emojiMatch && emojiMatch.length >= 3) {
-      const emoji = emojiMatch[1].trim();
-      const title = emojiMatch[2].trim();
+      // const emoji = emojiMatch[1].trim();
+      const title = emojiMatch[1] + emojiMatch[2];
 
       // Set emoji and title
-      questionEmoji.textContent = emoji;
+      // questionEmoji.textContent = emoji;
       questionTitle.textContent = title;
+      questionTitle.style.whiteSpace = 'pre-wrap'; // Wrap the title in its container
 
       // Extract options
       const options = [];
@@ -248,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Create a new options group
       const newOptionsGroup = document.createElement('div');
       newOptionsGroup.className = 'options-group current';
-      
+
       // Create option elements in the new group
       options.forEach((option, index) => {
         const optionItem = document.createElement('div');
@@ -269,14 +275,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         newOptionsGroup.appendChild(optionItem);
       });
-      
+
       // Handle existing options - mark all existing groups as previous
       const existingGroups = optionsList.querySelectorAll('.options-group');
-      existingGroups.forEach(group => {
+      existingGroups.forEach((group) => {
         group.classList.remove('current');
         group.classList.add('previous');
       });
-      
+
       // Clear the options list if there are too many groups
       if (existingGroups.length >= 2) {
         // Keep only the most recent previous group
@@ -284,13 +290,12 @@ document.addEventListener('DOMContentLoaded', () => {
           optionsList.removeChild(optionsList.firstChild);
         }
       }
-      
+
       // Add the new group to the options list
       optionsList.appendChild(newOptionsGroup);
-      
+
       // Ensure the new options are visible
       optionsList.scrollTop = optionsList.scrollHeight;
-      
     } else {
       // Fallback if parsing fails
       questionEmoji.textContent = '🤔';
@@ -299,12 +304,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // Create a new group for the fallback content
       const newOptionsGroup = document.createElement('div');
       newOptionsGroup.className = 'options-group current';
-      
+
       const optionItem = document.createElement('div');
       optionItem.className = 'option-item';
       optionItem.textContent = response;
       newOptionsGroup.appendChild(optionItem);
-      
+
       // Clear and add the new group to the options list
       optionsList.innerHTML = '';
       optionsList.appendChild(newOptionsGroup);
@@ -388,10 +393,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Clear any displayed content
     questionEmoji.textContent = '🤔';
     questionTitle.textContent = 'What would you like to do?';
-    
+
     // Clear all option groups
     optionsList.innerHTML = '';
-    
+
     // Reset other elements
     solutionDescription.textContent = '';
     solutionStepsList.innerHTML = '';
@@ -430,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Test the connection using the API service
       const data = await apiService.testConnection();
-      
+
       connectionStatus.textContent = 'Connected successfully!';
       connectionStatus.style.color = '#4caf50';
 
