@@ -107,13 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function scrollToBottom() {
-    const container = chatMessages; // Use the chat messages container
-    if (container) {
-      // Use requestAnimationFrame for better timing
-      requestAnimationFrame(() => {
-        container.scrollTop = container.scrollHeight;
-      });
-    }
+    // const container = chatMessages; // Use the chat messages container
+    // if (container) {
+    //   // Use requestAnimationFrame for better timing
+    //   requestAnimationFrame(() => {
+    //     container.scrollTop = container.scrollHeight;
+    //   });
+    // }
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
   // Start a new conversation with the LLM
