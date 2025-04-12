@@ -106,6 +106,16 @@ document.addEventListener('DOMContentLoaded', () => {
     resetConversation();
   });
 
+  function scrollToBottom() {
+    // Get the container element
+    const container = document.getElementById('content-container');
+
+    // If the container exists, set its scrollTop to its max height
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }
+
   // Start a new conversation with the LLM
   async function startConversation(initialOption, optionText) {
     // Reset conversation history
@@ -230,15 +240,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Display a question with options
   function displayQuestion(response) {
+    console.log(response);
     // Parse the response to extract emoji, title, and options
     const emojiMatch = response.match(/\*\*([^\*]+)\s([^\*]+)\*\*/);
     console.log(emojiMatch);
     if (emojiMatch && emojiMatch.length >= 3) {
-      // const emoji = emojiMatch[1].trim();
-      const title = emojiMatch[1] + emojiMatch[2];
+      const emoji = response.slice(0, emojiMatch.index).trim();
+      const title = emojiMatch[1] + ' ' + emojiMatch[2];
 
       // Set emoji and title
-      // questionEmoji.textContent = emoji;
+      questionEmoji.textContent = emoji;
       questionTitle.textContent = title;
       questionTitle.style.whiteSpace = 'pre-wrap'; // Wrap the title in its container
 
@@ -274,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         newOptionsGroup.appendChild(optionItem);
+        scrollToBottom();
       });
 
       // Handle existing options - mark all existing groups as previous
