@@ -107,12 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function scrollToBottom() {
-    // Get the container element
-    const container = document.getElementById('content-container');
-
-    // If the container exists, set its scrollTop to its max height
+    const container = chatMessages; // Use the chat messages container
     if (container) {
-      container.scrollTop = container.scrollHeight;
+      // Use requestAnimationFrame for better timing
+      requestAnimationFrame(() => {
+        container.scrollTop = container.scrollHeight;
+      });
     }
   }
 
@@ -241,6 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Display a question with options
   function displayQuestion(response) {
     console.log(response);
+    scrollToBottom();
+
     // Parse the response to extract emoji, title, and options
     const emojiMatch = response.match(/\*\*([^\*]+)\s([^\*]+)\*\*/);
     console.log(emojiMatch);
@@ -285,7 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         newOptionsGroup.appendChild(optionItem);
-        scrollToBottom();
       });
 
       // Handle existing options - mark all existing groups as previous
@@ -326,6 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
       optionsList.innerHTML = '';
       optionsList.appendChild(newOptionsGroup);
     }
+    scrollToBottom();
   }
 
   // Display the solution
@@ -509,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (id) messageDiv.id = id;
     messageDiv.textContent = content;
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    scrollToBottom(); // Ensure this is called here
   }
 
   // Update message in chat
@@ -517,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageDiv = document.getElementById(id);
     if (messageDiv) {
       messageDiv.textContent = content;
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      scrollToBottom(); // Ensure this is called here
     }
   }
 
