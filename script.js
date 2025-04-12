@@ -107,14 +107,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function scrollToBottom() {
-    // const container = chatMessages; // Use the chat messages container
-    // if (container) {
-    //   // Use requestAnimationFrame for better timing
-    //   requestAnimationFrame(() => {
-    //     container.scrollTop = container.scrollHeight;
-    //   });
-    // }
-    window.scrollTo(0, document.body.scrollHeight);
+    // Scroll to the bottom of the page
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      left: 0,
+      behavior: 'smooth',
+      easing: 'ease-in-out',
+      duration: 1000,
+    });
   }
 
   // Start a new conversation with the LLM
