@@ -186,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       // Show loading state
       questionTitle.textContent = 'Thinking...';
-      optionsList.innerHTML = '';
 
       // Get temperature setting
       const temperature = parseFloat(temperatureSlider.value);
@@ -325,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
       newOptionsGroup.appendChild(optionItem);
 
       // Clear and add the new group to the options list
-      optionsList.innerHTML = '';
+      // optionsList.innerHTML = '';
       optionsList.appendChild(newOptionsGroup);
     }
     scrollToBottom();
